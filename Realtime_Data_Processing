@@ -1,0 +1,49 @@
+# Real-Time Data Processing Pipeline on AWS
+
+## Project Overview
+This project implements an event-driven data processing pipeline on Amazon Web Services (AWS) using Lambda, EC2, S3, Auto Scaling, and CloudWatch for real-time data handling. The pipeline is triggered by a web page where users can upload files to an S3 bucket. Once uploaded, the raw data triggers a Lambda function that processes it and stores the processed data back in S3. IAM policies are created for Lambda and EC2 instances to manage permissions securely.
+
+## Technologies Used:
+- **AWS Lambda**: Event-driven compute service that processes raw data upon upload to S3.
+- **AWS EC2**: Virtual servers used for compute-heavy processing tasks.
+- **Amazon S3**: Object storage service for storing raw and processed data.
+- **AWS Auto Scaling (ASG)**: Dynamically adjusts EC2 instance count to handle varying loads.
+- **AWS CloudWatch**: Monitors the performance of the pipeline and triggers alerts or scaling actions.
+- **Python Boto3**: Automates AWS resource management and integration within the pipeline.
+- **IAM Policies**: Securely manage access for Lambda and EC2 instances.
+
+## Features:
+- **Web Page for Upload**: A user-friendly web page where users can upload files to S3, triggering the data processing pipeline.
+- **Event-Driven Processing**: Upon upload, an event triggers a Lambda function that processes the raw data and stores it as processed data in S3.
+- **Scalability**: Auto Scaling ensures that the system can handle increasing loads by adjusting the number of EC2 instances.
+- **IAM Policies**: Secure access control for Lambda and EC2 instances using IAM policies.
+- **Real-Time Monitoring**: CloudWatch monitors key metrics like Lambda execution time, EC2 CPU utilization, and overall throughput.
+
+## Setup Instructions:
+1. **Set Up the S3 Bucket**:
+   - Create an S3 bucket for storing both raw and processed data.
+2. **Create Lambda Function**:
+   - Develop and deploy a Lambda function that processes the raw data uploaded to S3.
+   - Include the Lambda function code to process and store the data.
+3. **IAM Policies**:
+   - Create IAM policies to grant necessary permissions for Lambda and EC2 instances to interact with S3 and other AWS services securely.
+4. **Web Page**:
+   - Implement the web page that allows users to upload files to S3, triggering the data processing pipeline.
+5. **Configure EC2 Instances**:
+   - Set up EC2 instances for processing compute-intensive tasks if needed.
+6. **Auto Scaling**:
+   - Configure Auto Scaling for EC2 instances to scale resources based on load.
+7. **Configure CloudWatch**:
+   - Set up CloudWatch alarms to monitor pipeline performance and trigger scaling actions.
+8. **Python Boto3**:
+   - Use Python Boto3 to automate interactions with AWS services such as Lambda, EC2, and S3.
+
+## Usage:
+- Users upload files to the S3 bucket via the web page. This triggers a Lambda function to process the raw data.
+- The Lambda function processes the data and stores it back in S3 as processed data.
+- CloudWatch monitors the system, providing performance insights and triggering scaling actions as needed.
+
+## Future Enhancements:
+- **Data Validation**: Add a step to validate the uploaded data before processing.
+- **Database Integration**: Store processed data in a database like DynamoDB or RDS for better querying and analysis.
+
