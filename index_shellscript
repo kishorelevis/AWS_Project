@@ -1,112 +1,120 @@
 #!/bin/bash
 
-# Start logging to a file for debugging
-exec > >(tee -a /var/log/user-data.log) 2>&1
+# Start logging
+exec > >(tee /var/log/user-data.log) 2>&1
 echo "User data script started"
 
 # Update system packages
 yum update -y
 echo "System packages updated"
 
-# Install Git to clone the repository
+# Install Java (required for Jenkins)
+yum install -y java-11-openjdk
+echo "Java installed"
+
+# Add Jenkins repository and import the key
+wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+echo "Jenkins repository added"
+
+# Install Jenkins
+yum install -y jenkins
+echo "Jenkins installed"
+
+# Start and enable Jenkins service
+systemctl enable jenkins
+systemctl start jenkins
+echo "Jenkins started"
+
+# Install Git
 yum install -y git
 echo "Git installed"
 
-# Install Node.js (latest LTS version)
-curl --silent --location https://rpm.nodesource.com/setup_16.x | bash -
+# Install AWS CLI
+yum install -y aws-cli
+echo "AWS CLI installed"
+
+# Install Node.js and PM2
+curl -fsSL https://rpm.nodesource.com/setup_16.x | bash -
 yum install -y nodejs
-echo "Node.js installed"
-
-# Install required packages for AWS S3 and file upload
-yum install -y gcc-c++ make
-echo "Build tools installed"
-
-# Install PM2 (Process Manager for Node.js)
 npm install -g pm2
-echo "PM2 installed"
+echo "Node.js and PM2 installed"
 
-# Create the Node.js app directory
-mkdir -p /var/www/app
-cd /var/www/app
+# Clone GitHub Repository
+APP_DIR="/var/www/app"
+GITHUB_REPO="https://github.com/kishorelevis/AWS_Project.git"
 
-# Initialize Node.js app
-npm init -y
-echo "Node.js app initialized"
+mkdir -p $APP_DIR
+cd $APP_DIR
 
-# Install necessary Node.js packages
-npm install express multer aws-sdk
-if [ $? -eq 0 ]; then
-    echo "Node.js packages installed"
+if [ ! -d ".git" ]; then
+    git clone $GITHUB_REPO .
+    echo "Repository cloned"
 else
-    echo "Error installing Node.js packages" >&2
-    exit 1
+    git pull origin main
+    echo "Repository updated"
 fi
 
-# Clone the HTML file from GitHub
-GITHUB_REPO="https://github.com/kishorelevis/AWS_Project/raw/main/index.html"
+# Install required Node.js packages
+npm install express multer aws-sdk
+echo "Node.js packages installed"
 
-# Download the index.html file
-curl -o /var/www/app/index.html $GITHUB_REPO
-echo "HTML upload form downloaded from GitHub"
-
-# Set up a cron job to update the HTML file daily
-echo "0 0 * * * curl -o /var/www/app/index.html $GITHUB_REPO" | crontab -
-echo "Cron job set to update HTML file daily"
-
-# Create the Node.js server for handling file uploads
-echo "const express = require('express');
+# Create the Node.js server (server.js)
+cat <<EOF > $APP_DIR/server.js
+const express = require('express');
 const multer = require('multer');
 const AWS = require('aws-sdk');
 const path = require('path');
 const app = express();
 
-// Set up AWS SDK with region and access
+// AWS Configuration
 AWS.config.update({ region: 'us-east-1' });
 const s3 = new AWS.S3();
 
-// Set up multer storage for file uploads
+// Multer Storage (Temporary Memory)
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Handle file uploads
+// Upload API
 app.post('/upload', upload.single('file'), (req, res) => {
     const params = {
-        Bucket: 's3-project2-bucket',  // Replace with your S3 bucket name
-        Key: `${Date.now()}-${path.basename(req.file.originalname)}`,
+        Bucket: 's3-pro3-rawbucket',  // Replace with your S3 bucket
+        Key: \`\${Date.now()}-\${path.basename(req.file.originalname)}\`,
         Body: req.file.buffer,
         ContentType: req.file.mimetype,
     };
 
     s3.upload(params, (err, data) => {
         if (err) {
+            console.error("Error uploading:", err);
             return res.status(500).send('Error uploading file to S3');
         }
-        res.send('File uploaded successfully! <a href="/">Back to home</a>');
+        console.log("File uploaded:", data.Location);
+        res.send(\`File uploaded successfully! <a href="/">Back to home</a>\`);
     });
 });
 
-// Serve the static HTML file
+// Serve the HTML upload form
 app.get('/', (req, res) => {
     res.sendFile('/var/www/app/index.html');
 });
 
-// Start the server on port 80 and bind to all interfaces
+// Start server
 app.listen(80, '0.0.0.0', () => {
     console.log('Server running on http://<your-ec2-ip>');
-});" > /var/www/app/server.js
-echo "Node.js server created"
+});
+EOF
+echo "server.js created"
 
-# Start the Node.js server using PM2 for background management
-cd /var/www/app
-pm2 start /var/www/app/server.js --name "file-upload-app" --watch --no-daemon
-echo "Node.js server started with PM2"
-
-# Save PM2 process list to resurrect on reboot
+# Start the Node.js application with PM2
+cd $APP_DIR
+pm2 start server.js --name "file-upload-app"
 pm2 save
-echo "PM2 process list saved"
-
-# Set up PM2 to restart on reboot
 pm2 startup systemd
-echo "PM2 startup configured"
+echo "Node.js app started with PM2"
+
+# Display the initial Jenkins admin password
+echo "Jenkins setup completed. Get the initial admin password using:"
+echo "sudo cat /var/lib/jenkins/secrets/initialAdminPassword"
 
 echo "User data script completed"
