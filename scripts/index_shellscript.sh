@@ -25,7 +25,7 @@ echo "Node.js and PM2 installed"
 
 # Clone GitHub Repository for index.html
 WEB_DIR="/var/www/html"
-GITHUB_REPO="https://github.com/kishorelevis/AWS_Project.git"
+GITHUB_REPO="https://github.com/kishorelevis/AWS_Project.git/web_app"
 
 mkdir -p $WEB_DIR
 cd $WEB_DIR
