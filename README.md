@@ -9,7 +9,7 @@ This repository showcases a sample implementation of a cloud-native architecture
 ## 🔧 Technologies & Services Used
 
 - **AWS**: EC2, S3, Lambda, RDS (PostgreSQL), IAM, CloudFormation, VPC
-- **DevOps Tools**: GitHub, CI/CD, Jenkins , Docker 
+- **DevOps Tools**: GitHub, CI/CD, Jenkins 
 - **Scripting**: Python (Boto3), Shell
 - **Monitoring**: CloudWatch
 
