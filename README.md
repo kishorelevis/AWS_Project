@@ -9,7 +9,7 @@ This repository showcases a sample implementation of a cloud-native architecture
 ## 🔧 Technologies & Services Used
 
 - **AWS**: EC2, S3, Lambda, RDS (PostgreSQL), IAM, CloudFormation, VPC
-- **DevOps Tools**: GitHub, CI/CD, Jenkins (optional), Docker (optional)
+- **DevOps Tools**: GitHub, CI/CD, Jenkins , Docker 
 - **Scripting**: Python (Boto3), Shell
 - **Monitoring**: CloudWatch
 
@@ -23,7 +23,7 @@ To demonstrate a scalable AWS cloud solution that:
 - Automatically triggers a Lambda function to process raw data
 - Stores processed output in a separate S3 bucket or RDS instance
 - Uses IAM roles for secure service interactions
-- Deploys infrastructure using CloudFormation (optional)
+- Deploys infrastructure using CloudFormation
 
 ---
 
