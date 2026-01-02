@@ -1,8 +1,8 @@
-# 🚀 AWS Cloud Project – Sample Architecture (Inspired by Work at Gensol Infotech)
+# 🚀 AWS Cloud Project – Sample Architecture 
 
 This repository showcases a sample implementation of a cloud-native architecture using various AWS services. It reflects the kind of infrastructure and automation I’ve worked on as an AWS Cloud Engineer at Gensol Infotech, adapted here as a personal project for learning and demonstration purposes.
 
-> ⚠️ This is a **personal project** inspired by real-world cloud deployment patterns. No proprietary or confidential company data is included.
+> ⚠️ This is a **personal project** inspired by real-world cloud deployment patterns. 
 
 ---
 
