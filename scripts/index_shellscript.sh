@@ -5,6 +5,7 @@ exec > >(tee /var/log/user-data.log) 2>&1
 echo "User data script started"
 
 # Update system packages
+
 yum update -y
 echo "System packages updated"
 
