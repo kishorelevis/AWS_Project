@@ -2,7 +2,7 @@ import boto3
 import os
 import logging
 
-# Initialize S3 client and logger
+# Initialize S3 client and logger.
 s3 = boto3.client('s3')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
