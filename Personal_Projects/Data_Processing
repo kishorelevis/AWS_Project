@@ -1,4 +1,4 @@
-e11Project Overview
+Project Overview
 
 This project implements an event-driven data processing pipeline on Amazon Web Services (AWS) using Lambda, EC2, S3, DynamoDB, Auto Scaling, and CloudWatch for real-time data handling. The pipeline is triggered by a web page where users can upload files to an S3 bucket. Once uploaded, the raw data triggers a Lambda function that processes it, stores the processed data back in S3, and logs metadata in DynamoDB. IAM policies are created for Lambda and EC2 instances to manage permissions securely.
 
